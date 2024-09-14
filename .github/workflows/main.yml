@@ -11,15 +11,18 @@ jobs:
     name: Run MATLAB Tests
     strategy:
       matrix:
-        release: [R2021a, R2021b, R2022a, R2022b, R2023a, R2023b, R2024a, R2024b]
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
+        release: [R2021a, R2021b, R2022a, R2022b, R2023a, R2023b, R2024a]
+        os: [Linux]
+      fail-fast: false
+    runs-on: 
+      - ${{ matrix.os }}
+      - matlab
+      - self-hosted
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-      - name: Set up MATLAB
-        uses: matlab-actions/setup-matlab@v2
-        with:
-          release: ${{ matrix.release }}
+      - name: Setup headless display
+        uses: pyvista/setup-headless-display-action@v2
+      - run: echo "/opt/MATLAB/${{ matrix.release }}/bin" >> $GITHUB_PATH        
       - name: Run tests
         uses: matlab-actions/run-tests@v2
